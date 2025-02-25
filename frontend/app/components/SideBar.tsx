@@ -7,7 +7,7 @@ function SideBar() {
   return (
     <div className='container'>
         <div className="logo"></div>
-        <div className="flex flex-col justify-center bg-gray-800 border-gray-600 border-r-[1px] h-[100vh] bo nav">
+        <div className="flex flex-col justify-between bg-gray-800 border-gray-600 border-r-[1px] h-[100vh] bo nav">
             <div className="nav-element">
                 <Sparkles className="icon-sparkles" width={20} height={20} />
             <Link href='Generate' className='nav-item' />
