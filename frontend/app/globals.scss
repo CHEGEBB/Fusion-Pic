@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Colors
+$bg-dark: #0a0a1a;  // Dark navy/black background
+$primary-purple: #8c65f7;  // Purple used in buttons and accents
+$white: #ffffff;
+$light-gray: #f5f5f7;
+$medium-gray: #9b9b9b;
+$dark-gray: #333342;
+
+// Color palette (circular color selectors)
+$red: #ff5c5c;
+$orange: #ff9f5c;
+$green: #5cff7f;
+$light-blue: #5cb8ff;
+$blue: #5c7fff;
+$purple: #a05cff;
+$pink: #ff5cd0;
+$dark: #262626;
+
+// Font settings
+$font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Font sizes
+$font-size-xs: 0.75rem;  // 12px
+$font-size-sm: 0.875rem; // 14px
+$font-size-base: 1rem;   // 16px
+$font-size-lg: 1.125rem; // 18px
+$font-size-xl: 1.25rem;  // 20px
+$font-size-2xl: 1.5rem;  // 24px
+
+// Border radius
+$border-radius-sm: 0.375rem;
+$border-radius-md: 0.5rem;
+$border-radius-lg: 0.75rem;
+$border-radius-xl: 1rem;
+
+// Shadows
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+body{
+  background-color:#1f2937;
+}
