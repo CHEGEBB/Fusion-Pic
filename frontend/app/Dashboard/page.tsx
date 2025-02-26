@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import SideBar from '../components/SideBar';
 import aiImage from "../assets/ai.jpg"
@@ -16,66 +17,130 @@ import aiImage11 from "../assets/1 (8).jpeg"
 import aiImage12 from "../assets/1 (9).jpeg"
 
 import userProf1 from "../assets/user.jpg"
+import { Bookmark } from 'lucide-react';
 
 function Page() {
   interface PostedImage {
+    id: number;
     imageUrl: StaticImageData;
-    avatarUrl: StaticImageData;
+    avatarUrl: StaticImageData | string;
     userName: string;
-    bookmarked?: boolean;
+    bookmarked: boolean;
+    aspectRatio?: string; // To control varying heights
   }
 
-  // Sample data for the gallery grid
-  const images: PostedImage[] = [
+  // Sample data for the gallery grid with varying aspect ratios
+  const initialImages: PostedImage[] = [
     {
+      id: 1,
       imageUrl: aiImage,
       avatarUrl: userProf1,
       userName: 'Michael Bacon',
-      bookmarked: true
+      bookmarked: true,
+      aspectRatio: "3/4" // Taller
     },
     {
+      id: 2,
       imageUrl: aiImage2,
       avatarUrl: '/assets/user2.jpg',
       userName: 'Sonja Smith',
-      bookmarked: true
+      bookmarked: true,
+      aspectRatio: "16/9" // Wider
     },
     {
+      id: 3,
       imageUrl: aiImage3,
       avatarUrl: '/assets/user3.jpg',
       userName: 'Brady Williams',
-      bookmarked: true
+      bookmarked: true,
+      aspectRatio: "1/1" // Square
     },
     {
+      id: 4,
       imageUrl: aiImage4,
       avatarUrl: '/assets/user4.jpg',
       userName: 'Ashli Brown',
-      bookmarked: true
+      bookmarked: true,
+      aspectRatio: "4/5" // Taller
     },
     {
+      id: 5,
       imageUrl: aiImage5,
       avatarUrl: '/assets/user5.jpg',
       userName: 'Li Wei',
-      bookmarked: false
+      bookmarked: false,
+      aspectRatio: "16/9" // Wider
     },
     {
+      id: 6,
       imageUrl: aiImage6,
       avatarUrl: '/assets/user6.jpg',
       userName: 'Carlos Rodriguez',
-      bookmarked: false
+      bookmarked: false,
+      aspectRatio: "3/2" // Standard
     },
     {
+      id: 7,
       imageUrl: aiImage7,
       avatarUrl: '/assets/user7.jpg',
       userName: 'Yuki Tanaka',
-      bookmarked: false
+      bookmarked: false,
+      aspectRatio: "9/16" // Very tall
     },
     {
+      id: 8,
       imageUrl: aiImage8,
       avatarUrl: '/assets/user8.jpg',
+      userName: 'Brayo Chege',
+      bookmarked: false,
+      aspectRatio: "1/1" // Square
+    },
+    {
+      id: 9,
+      imageUrl: aiImage9,
+      avatarUrl: '/assets/user8.jpg',
       userName: 'Alex Johnson',
-      bookmarked: false
-    }
+      bookmarked: false,
+      aspectRatio: "4/3" // Standard
+    },
+    {
+      id: 10,
+      imageUrl: aiImage10,
+      avatarUrl: '/assets/user8.jpg',
+      userName: 'Marcela Martinez',
+      bookmarked: false,
+      aspectRatio: "2/3" // Taller
+    },
+    {
+      id: 11,
+      imageUrl: aiImage11,
+      avatarUrl: '/assets/user8.jpg',
+      userName: 'Jakob Wilson',
+      bookmarked: true,
+      aspectRatio: "1/1.5" // Taller
+    },
+    {
+      id: 12,
+      imageUrl: aiImage12,
+      avatarUrl: '/assets/user8.jpg',
+      userName: 'Belinda Davis',
+      bookmarked: false,
+      aspectRatio: "3/2" // Standard
+    },
   ];
+
+  const [images, setImages] = useState<PostedImage[]>(initialImages);
+
+  // Function to toggle bookmark status
+  const toggleBookmark = (id: number) => {
+    setImages(prevImages => 
+      prevImages.map(image => 
+        image.id === id 
+          ? { ...image, bookmarked: !image.bookmarked } 
+          : image
+      )
+    );
+  };
 
   return (
     <div className='flex flex-row w-full h-screen bg-gray-900 text-white'>
@@ -100,39 +165,51 @@ function Page() {
           </div>
         </div>
         
-        {/* Image grid */}
+        {/* Image grid - using masonry-like layout with varying heights */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {images.map((image, index) => (
-            <div key={index} className="relative group rounded-lg overflow-hidden bg-gray-800">
-              <div className="aspect-w-1 aspect-h-1 w-full h-[350px]">
+          {images.map((image) => (
+            <div 
+              key={image.id} 
+              className="relative group rounded-lg overflow-hidden bg-gray-800 border-2 border-gray-800 hover:border-gray-700 transition-all"
+              style={{ height: 'auto' }} // Let height be determined by content and aspect ratio
+            >
+              <div 
+                className="w-full" 
+                style={{ 
+                  aspectRatio: image.aspectRatio || '1/1',
+                }}
+              >
                 <Image 
                   src={image.imageUrl} 
                   alt={`Posted by ${image.userName}`}
-                  width={500}
-                  height={500}
-                  className="object-cover w-full h-full"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover"
                 />
               </div>
               <div className="absolute bottom-0 left-0 w-full p-2 flex items-center justify-between bg-gradient-to-t from-black/80 to-transparent">
                 <div className="flex items-center">
                   <div className="w-6 h-6 rounded-full overflow-hidden mr-2 bg-gray-300">
-                    <Image 
-                      src={image.avatarUrl} 
-                      alt={image.userName} 
-                      width={24} 
-                      height={24}
-                      className="object-cover"
-                    />
+                    {typeof image.avatarUrl === 'string' ? (
+                      <div className="w-full h-full bg-gray-400"></div>
+                    ) : (
+                      <Image 
+                        src={image.avatarUrl} 
+                        alt={image.userName} 
+                        width={24} 
+                        height={24}
+                        className="object-cover"
+                      />
+                    )}
                   </div>
                   <span className="text-sm font-medium truncate">{image.userName}</span>
                 </div>
-                {image.bookmarked && (
-                  <div className="text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
-                    </svg>
-                  </div>
-                )}
+                <div 
+                  className={`text-white ${image.bookmarked ? 'bg-indigo-500' : 'bg-gray-700 bg-opacity-70 hover:bg-gray-600'} w-7 h-7 rounded-[4px] p-1 cursor-pointer transition-colors`}
+                  onClick={() => toggleBookmark(image.id)}
+                >
+                  <Bookmark width={20} height={20} className="" fill={image.bookmarked ? 'currentColor' : 'none'}/>
+                </div>
               </div>
             </div>
           ))}
