@@ -34,7 +34,7 @@ function SideBar() {
                 }`}
                 onClick={() => handleNavClick({ path: 'Generate', label: 'Generate' })}>
                     <Sparkles className="w-5 h-5" />
-                    <Link href="" className="absolute inset-0" aria-label="Generate" />
+                    <Link href="/" className="absolute inset-0" aria-label="Generate" />
                 </div>
                 <div className="absolute left-14 top-1 whitespace-nowrap bg-gray-700 text-white px-2 py-1 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                     Generate
