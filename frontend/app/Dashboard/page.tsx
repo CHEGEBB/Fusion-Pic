@@ -5,6 +5,15 @@ import SideBar from '../components/SideBar';
 import aiImage from "../assets/ai.jpg"
 import aiImage2 from "../assets/ai2.jpeg"
 import aiImage3 from "../assets/ai3.jpeg"
+import aiImage4 from "../assets/1 (1).jpeg"
+import aiImage5 from "../assets/1 (2).jpeg"
+import aiImage6 from "../assets/1 (3).jpeg"
+import aiImage7 from "../assets/1 (4).jpeg"
+import aiImage8 from "../assets/1 (5).jpeg"
+import aiImage9 from "../assets/1 (6).jpeg"
+import aiImage10 from "../assets/1 (7).jpeg"
+import aiImage11 from "../assets/1 (8).jpeg"
+import aiImage12 from "../assets/1 (9).jpeg"
 
 import userProf1 from "../assets/user.jpg"
 
@@ -37,31 +46,31 @@ function Page() {
       bookmarked: true
     },
     {
-      imageUrl: '/assets/portal.jpg',
+      imageUrl: aiImage4,
       avatarUrl: '/assets/user4.jpg',
       userName: 'Ashli Brown',
       bookmarked: true
     },
     {
-      imageUrl: '/assets/temple.jpg',
+      imageUrl: aiImage5,
       avatarUrl: '/assets/user5.jpg',
       userName: 'Li Wei',
       bookmarked: false
     },
     {
-      imageUrl: '/assets/desert.jpg',
+      imageUrl: aiImage6,
       avatarUrl: '/assets/user6.jpg',
       userName: 'Carlos Rodriguez',
       bookmarked: false
     },
     {
-      imageUrl: '/assets/cat-japanese.jpg',
+      imageUrl: aiImage7,
       avatarUrl: '/assets/user7.jpg',
       userName: 'Yuki Tanaka',
       bookmarked: false
     },
     {
-      imageUrl: '/assets/mountains.jpg',
+      imageUrl: aiImage8,
       avatarUrl: '/assets/user8.jpg',
       userName: 'Alex Johnson',
       bookmarked: false
