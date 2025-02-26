@@ -11,7 +11,7 @@ function Page() {
   const [activeResolution, setActiveResolution] = useState('1024X1024(1:1)');
 
   return (
-    <div className='flex flex-row w-full h-[100vh] text-white main-container'>
+    <div className='flex sm:flex-col md:flex-row  lg:flex-row   w-full h-[100vh] text-white main-container'>
       <div className="sidebar w-18">
         <SideBar/>
       </div>
