@@ -26,7 +26,7 @@ function Page() {
     avatarUrl: StaticImageData | string;
     userName: string;
     bookmarked: boolean;
-    aspectRatio?: string; // To control varying heights
+    aspectRatio?: string; 
   }
 
   // Sample data for the gallery grid with varying aspect ratios
@@ -109,7 +109,7 @@ function Page() {
       avatarUrl: '/assets/user8.jpg',
       userName: 'Marcela Martinez',
       bookmarked: false,
-      aspectRatio: "2/3" // Taller
+      aspectRatio: "2/3"
     },
     {
       id: 11,
@@ -117,7 +117,7 @@ function Page() {
       avatarUrl: '/assets/user8.jpg',
       userName: 'Jakob Wilson',
       bookmarked: true,
-      aspectRatio: "1/1.5" // Taller
+      aspectRatio: "1/1.5"
     },
     {
       id: 12,
@@ -125,7 +125,7 @@ function Page() {
       avatarUrl: '/assets/user8.jpg',
       userName: 'Belinda Davis',
       bookmarked: false,
-      aspectRatio: "3/2" // Standard
+      aspectRatio: "3/2" 
     },
   ];
 
