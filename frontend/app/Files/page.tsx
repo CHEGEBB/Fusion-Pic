@@ -3,10 +3,6 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { StaticImageData } from 'next/image';
 import Image1 from "../assets/1 (1).jpeg";
-import Link from 'next/link';
-
-// Import SideBar component
-// Note: You'll need to ensure this path is correct for your project structure
 import SideBar from '../components/SideBar';
 
 // Mock user data - would come from auth system in production
@@ -14,7 +10,7 @@ const userData = {
   name: "Alex Johnson",
   email: "alex@example.com",
   profilePic: "/profile-placeholder.jpg",
-  storageUsed: 68, // percentage
+  storageUsed: 68,
   plan: "Premium",
   joinDate: "Nov 2024"
 };

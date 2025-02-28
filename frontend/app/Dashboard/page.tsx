@@ -29,7 +29,6 @@ function Page() {
     aspectRatio?: string; 
   }
 
-  // Sample data for the gallery grid with varying aspect ratios
   const initialImages: PostedImage[] = [
     {
       id: 1,

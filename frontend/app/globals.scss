@@ -1,8 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 // Colors
 $bg-dark: #0a0a1a;  // Dark navy/black background
 $primary-purple: #8c65f7;  // Purple used in buttons and accents
@@ -53,7 +52,8 @@ $shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
 
 body{
   background-color:#111827;
-  font-family: $font-Outfit;
+  font-family: $font-Rubik;
+  
 }
 h1, h2, h3, h4, h5, h6{
   font-family: $font-Poppins;

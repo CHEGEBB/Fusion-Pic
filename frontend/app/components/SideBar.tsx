@@ -1,11 +1,12 @@
 "use client"
 
-import { FolderDown, HistoryIcon, LayoutDashboard, Sparkles, LogOut } from 'lucide-react'
+import { FolderDown, HistoryIcon, LayoutDashboard, Sparkles, LogOut, User } from 'lucide-react'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Logo from '../assets/logo2.png'
 import "../sass/Sidebar.scss"
+import { usePathname } from 'next/navigation'
 
 interface Route {
     path: string;
@@ -13,11 +14,18 @@ interface Route {
 }
 
 function SideBar() {
-  const [activeLink, setActiveLink] = useState('Generate');
+  const pathname = usePathname();
+  const [activeLink, setActiveLink] = useState('');
 
-  const handleNavClick = (route: Route) => {
-    setActiveLink(route.path);
-  };
+  // Set active link based on current path on component mount and when path changes
+  useEffect(() => {
+    if (pathname === '/') {
+      setActiveLink('Auth');
+    } else {
+      const currentPath = pathname.substring(1); // Remove the leading slash
+      setActiveLink(currentPath);
+    }
+  }, [pathname]);
 
   return (
     <div className="flex flex-col justify-between bg-gray-900 border-r-2 border-r-gray-700 h-full py-6 px-3">
@@ -26,17 +34,31 @@ function SideBar() {
         </div>
         
         <div className="flex flex-col space-y-8">
+            {/* Auth link (default route) */}
+            <div className="relative group">
+                <div className={`p-3 rounded-lg cursor-pointer transition-all duration-300 flex items-center justify-center ${
+                    activeLink === 'Auth' || activeLink === ''
+                    ? 'bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 text-white' 
+                    : 'hover:bg-gray-700 text-gray-300'
+                }`}>
+                    <User className="w-5 h-5" />
+                    <Link href="/" className="absolute inset-0" aria-label="Auth" />
+                </div>
+                <div className="absolute left-14 top-1 whitespace-nowrap bg-gray-700 text-white px-2 py-1 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                    Auth
+                </div>
+            </div>
+
             <div className="relative group">
                 <div className={`p-3 rounded-lg cursor-pointer transition-all duration-300 flex items-center justify-center ${
                     activeLink === 'Generate' 
                     ? 'bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 text-white' 
                     : 'hover:bg-gray-700 text-gray-300'
-                }`}
-                onClick={() => handleNavClick({ path: 'Generate', label: 'Generate' })}>
+                }`}>
                     <Sparkles className="w-5 h-5" />
-                    <Link href="/" className="absolute inset-0" aria-label="Generate" />
+                    <Link href="/Generate" className="absolute inset-0" aria-label="Generate" />
                 </div>
-                <div className="absolute left-14 top-1 whitespace-nowrap bg-gray-700 text-white px-2 py-1 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                <div className="absolute left-14 top-1 whitespace-nowrap bg-gray-700 text-white px-2 py-1 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                     Generate
                 </div>
             </div>
@@ -46,13 +68,11 @@ function SideBar() {
                     activeLink === 'Dashboard' 
                     ? 'bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 text-white' 
                     : 'hover:bg-gray-700 text-gray-300'
-                }`}
-                onClick={() => handleNavClick({ path: 'Dashboard', label: 'Dashboard' })}>
+                }`}>
                     <LayoutDashboard className="w-5 h-5" />
                     <Link href="/Dashboard" className="absolute inset-0" aria-label="Dashboard" />
                 </div>
-                {/* Tooltip */}
-                <div className="absolute left-14 top-1 whitespace-nowrap bg-gray-700 text-white px-2 py-1 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                <div className="absolute left-14 top-1 whitespace-nowrap bg-gray-700 text-white px-2 py-1 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                     Dashboard
                 </div>
             </div>
@@ -62,13 +82,11 @@ function SideBar() {
                     activeLink === 'History' 
                     ? 'bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 text-white' 
                     : 'hover:bg-gray-700 text-gray-300'
-                }`}
-                onClick={() => handleNavClick({ path: 'History', label: 'History' })}>
+                }`}>
                     <HistoryIcon className="w-5 h-5" />
                     <Link href="/History" className="absolute inset-0" aria-label="History" />
                 </div>
-                {/* Tooltip */}
-                <div className="absolute left-14 top-1 whitespace-nowrap bg-gray-700 text-white px-2 py-1 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                <div className="absolute left-14 top-1 whitespace-nowrap bg-gray-700 text-white px-2 py-1 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                     History
                 </div>
             </div>
@@ -78,13 +96,11 @@ function SideBar() {
                     activeLink === 'Files' 
                     ? 'bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 text-white' 
                     : 'hover:bg-gray-700 text-gray-300'
-                }`}
-                onClick={() => handleNavClick({ path: 'Files', label: 'Files' })}>
+                }`}>
                     <FolderDown className="w-5 h-5" />
                     <Link href="/Files" className="absolute inset-0" aria-label="Files" />
                 </div>
-                {/* Tooltip */}
-                <div className="absolute left-14 top-1 whitespace-nowrap bg-gray-700 text-white px-2 py-1 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                <div className="absolute left-14 top-1 whitespace-nowrap bg-gray-700 text-white px-2 py-1 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                     My Files
                 </div>
             </div>
@@ -96,13 +112,11 @@ function SideBar() {
                 activeLink === 'Logout' 
                 ? 'bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 text-white' 
                 : 'hover:bg-gray-700 text-gray-300'
-            }`}
-            onClick={() => handleNavClick({ path: 'Logout', label: 'Logout' })}>
+            }`}>
                 <LogOut className="w-5 h-5" />
                 <Link href="/Logout" className="absolute inset-0" aria-label="Logout" />
             </div>
-            {/* Tooltip */}
-            <div className="absolute left-14 top-1 whitespace-nowrap bg-gray-700 text-white px-2 py-1 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+            <div className="absolute left-14 top-1 whitespace-nowrap bg-gray-700 text-white px-2 py-1 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                 Logout
             </div>
         </div>
