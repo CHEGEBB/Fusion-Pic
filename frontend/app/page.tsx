@@ -24,6 +24,7 @@ function AuthPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
 
+
   const Images: ImageType[] = [
     {
       imageUrl: Image1,
