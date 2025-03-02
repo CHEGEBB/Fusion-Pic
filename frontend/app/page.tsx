@@ -2,13 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Github, Mail, ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import Image1 from "./assets/img1 (1).jpeg";
 import Image2 from "./assets/ai.jpg";
 import Image3 from "./assets/img1 (3).jpeg";
 import Image4 from "./assets/ai2.jpeg";
 import Logo from "./assets/logo2.png";
 import "./sass/Auth.scss";
+import { registerUser, loginUser } from "./services/authService";
+import { useRouter } from 'next/navigation';
 
 interface ImageType {
   imageUrl: StaticImageData;
@@ -17,13 +19,17 @@ interface ImageType {
 }
 
 function AuthPage() {
+  const router = useRouter();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
-
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState("");
 
   const Images: ImageType[] = [
     {
@@ -61,30 +67,137 @@ function AuthPage() {
     return () => clearInterval(interval);
   }, [Images.length]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Password strength checker
+  useEffect(() => {
+    if (!password) {
+      setPasswordStrength("");
+      return;
+    }
+
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const isLongEnough = password.length >= 8;
+
+    const strengthScore = [hasLowerCase, hasUpperCase, hasNumber, hasSpecialChar, isLongEnough].filter(Boolean).length;
+
+    if (strengthScore <= 2) {
+      setPasswordStrength("weak");
+    } else if (strengthScore <= 4) {
+      setPasswordStrength("medium");
+    } else {
+      setPasswordStrength("strong");
+    }
+  }, [password]);
+
+  // Reset form states when switching between login and signup
+  useEffect(() => {
+    setError("");
+    setSuccess("");
+    setPassword("");
+    setConfirmPassword("");
+    if (isLogin) {
+      setName("");
+    }
+  }, [isLogin]);
+
+  const validateForm = () => {
+    // Reset error
+    setError("");
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      return false;
+    }
+
+    // Password validation
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return false;
+    }
+
+    // For signup, check additional validations
+    if (!isLogin) {
+      if (!name.trim()) {
+        setError("Please enter your name");
+        return false;
+      }
+
+      if (password !== confirmPassword) {
+        setError("Passwords don't match");
+        return false;
+      }
+
+      if (passwordStrength === "weak") {
+        setError("Please use a stronger password with uppercase, lowercase, numbers and special characters");
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add your authentication logic here
-    console.log(isLogin ? "Logging in..." : "Signing up...", {
-      email,
-      password,
-      name,
-    });
+    setError("");
+    setSuccess("");
+    
+    // Validate form
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      if (!isLogin) {
+        // Signup flow
+        await registerUser({ name, email, password });
+        setSuccess("Account created successfully! Redirecting to dashboard...");
+        
+        // Delay redirect to show success message
+        setTimeout(() => {
+          router.push('/Generate');
+        }, 1500);
+      } else {
+        // Login flow
+        await loginUser({ email, password });
+        setSuccess("Login successful! Redirecting You 😊...");
+        
+        // Delay redirect to show success message
+        setTimeout(() => {
+          router.push('/Generate');
+        }, 1000);
+      }
+    } catch (err) {
+      console.error("Authentication error:", err);
+      setError(err instanceof Error ? err.message : 'Authentication failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleGoogleLogin = () => {
-    // Implement Google login
-    console.log("Google login");
+  const handleForgotPassword = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // Implement forgot password logic or redirect to password reset page
+    console.log("Forgot password clicked");
+    router.push('/forgot-password');
   };
 
-  const handleGithubLogin = () => {
-    // Implement Github login
-    console.log("Github login");
+  // Get strength indicator color
+  const getStrengthColor = () => {
+    if (passwordStrength === "weak") return "bg-red-500";
+    if (passwordStrength === "medium") return "bg-yellow-500";
+    if (passwordStrength === "strong") return "bg-green-500";
+    return "bg-gray-700";
   };
 
   return (
     <div className="flex h-screen bg-gray-900">
       {/* Left side - Image Carousel */}
-
       <div className="hidden md:flex md:w-1/2 relative overflow-hidden">
         <div className="logo-image absolute z-10 flex flex-row items-center gap-3 sm:gap-6 w-full max-w-[250px] p-3 sm:p-4">
           <Image
@@ -136,56 +249,17 @@ function AuthPage() {
             </p>
           </div>
 
-          <div className="space-y-4 mb-6">
-            <button
-              onClick={handleGoogleLogin}
-              className="flex items-center justify-center w-full gap-2 bg-white hover:bg-gray-100 text-gray-800 font-medium py-3 px-4 rounded-lg transition duration-300"
-            >
-              <svg
-                width="18"
-                height="18"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 48 48"
-              >
-                <path
-                  fill="#FFC107"
-                  d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
-                />
-                <path
-                  fill="#FF3D00"
-                  d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
-                />
-                <path
-                  fill="#4CAF50"
-                  d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"
-                />
-                <path
-                  fill="#1976D2"
-                  d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
-                />
-              </svg>
-              Continue with Google
-            </button>
-
-            <button
-              onClick={handleGithubLogin}
-              className="flex items-center justify-center w-full gap-2 bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition duration-300"
-            >
-              <Github size={18} />
-              Continue with GitHub
-            </button>
-          </div>
-
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-700"></div>
+          {error && (
+            <div className="bg-red-500 bg-opacity-10 border border-red-500 text-red-500 px-4 py-3 rounded mb-4">
+              {error}
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-900 text-gray-400">
-                Or continue with
-              </span>
+          )}
+
+          {success && (
+            <div className="bg-green-500 bg-opacity-10 border border-green-500 text-green-500 px-4 py-3 rounded mb-4">
+              {success}
             </div>
-          </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
@@ -204,6 +278,7 @@ function AuthPage() {
                   className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white placeholder-gray-500"
                   placeholder="Your name"
                   required={!isLogin}
+                  disabled={isLoading}
                 />
               </div>
             )}
@@ -223,6 +298,7 @@ function AuthPage() {
                 className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white placeholder-gray-500"
                 placeholder="name@example.com"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -241,7 +317,37 @@ function AuthPage() {
                 className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white placeholder-gray-500"
                 placeholder="••••••••"
                 required
+                disabled={isLoading}
               />
+              {!isLogin && password && (
+                <div className="mt-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs text-gray-400">Password strength:</span>
+                    <span className="text-xs font-medium capitalize" style={{
+                      color: passwordStrength === "weak" ? "#f87171" : 
+                             passwordStrength === "medium" ? "#facc15" : 
+                             passwordStrength === "strong" ? "#4ade80" : "#9ca3af"
+                    }}>
+                      {passwordStrength || "none"}
+                    </span>
+                  </div>
+                  <div className="h-1 w-full bg-gray-700 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full ${getStrengthColor()} transition-all duration-300`} 
+                      style={{ 
+                        width: passwordStrength === "weak" ? "33%" : 
+                               passwordStrength === "medium" ? "66%" : 
+                               passwordStrength === "strong" ? "100%" : "0%" 
+                      }}
+                    ></div>
+                  </div>
+                  {passwordStrength === "weak" && (
+                    <p className="text-xs text-red-400 mt-1">
+                      Use uppercase, lowercase, numbers, and special characters
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             {!isLogin && (
@@ -257,10 +363,18 @@ function AuthPage() {
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white placeholder-gray-500"
+                  className={`w-full px-4 py-3 bg-gray-800 border ${
+                    confirmPassword && password !== confirmPassword 
+                      ? "border-red-500 focus:ring-red-500 focus:border-red-500" 
+                      : "border-gray-700 focus:ring-indigo-500 focus:border-indigo-500"
+                  } rounded-lg text-white placeholder-gray-500`}
                   placeholder="••••••••"
                   required={!isLogin}
+                  disabled={isLoading}
                 />
+                {confirmPassword && password !== confirmPassword && (
+                  <p className="text-xs text-red-500 mt-1">Passwords do not match</p>
+                )}
               </div>
             )}
 
@@ -283,6 +397,7 @@ function AuthPage() {
                 <div className="text-sm">
                   <a
                     href="#"
+                    onClick={handleForgotPassword}
                     className="font-medium text-indigo-400 hover:text-indigo-300"
                   >
                     Forgot password?
@@ -294,9 +409,19 @@ function AuthPage() {
             <button
               type="submit"
               className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium rounded-lg transition duration-300"
+              disabled={isLoading}
             >
-              {isLogin ? "Sign in" : "Create Account"}
-              <ArrowRight size={16} />
+              {isLoading ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  {isLogin ? "Signing in..." : "Creating account..."}
+                </>
+              ) : (
+                <>
+                  {isLogin ? "Sign in" : "Create Account"}
+                  <ArrowRight size={16} />
+                </>
+              )}
             </button>
           </form>
 
@@ -305,6 +430,7 @@ function AuthPage() {
             <button
               onClick={() => setIsLogin(!isLogin)}
               className="ml-1 font-medium text-indigo-400 hover:text-indigo-300"
+              disabled={isLoading}
             >
               {isLogin ? "Sign up" : "Sign in"}
             </button>

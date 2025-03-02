@@ -1,25 +1,38 @@
 {
-  "name": "backend",
+  "name": "fusion-pic-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend for Fusion-Pic, an AI image generation platform",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
-    "dev": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "keywords": [
+    "ai",
+    "images",
+    "fusion-pic"
+  ],
+  "author": "CHEGEBB",
+  "license": "MIT",
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "bcryptjs": "^3.0.2",
+    "axios": "^1.8.1",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-session": "^1.18.1",
+    "helmet": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.11.0"
+    "mongoose": "^8.11.0",
+    "morgan": "^1.10.0",
+    "multer": "1.4.5-lts.1",
+    "sharp": "^0.33.5",
+    "uuid": "^9.0.1",
+    "xss-clean": "^0.1.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }
